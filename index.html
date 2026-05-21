@@ -1,1 +1,262 @@
-Z
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZAVARIAN | Command The Silence</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&display=swap');
+        
+        :root {
+            --obsidian: #050505;
+            --gold: #C6A664;
+            --bone: #F5F5F0;
+            --blood: #8B0000;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: default; scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--obsidian);
+            color: var(--bone);
+            font-family: 'Cormorant Garamond', serif;
+            overflow-x: hidden;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            background: radial-gradient(circle at 50% 50%, #0f0f0f 0%, #050505 100%);
+            animation: breathe 15s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0% { background: radial-gradient(circle at 50% 50%, #111111 0%, #050505 100%); }
+            50% { background: radial-gradient(circle at 50% 50%, #0A0A0A 0%, #020202 100%); }
+            100% { background: radial-gradient(circle at 50% 50%, #111111 0%, #050505 100%); }
+        }
+
+        body.loaded { opacity: 1; }
+
+        /* ROYAL LOADING PHASE */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: flex; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #loader.hidden { opacity: 0; pointer-events: none; }
+        #loader-text {
+            font-family: 'Cinzel', serif; color: var(--gold); font-size: 3rem;
+            letter-spacing: 20px; border-right: 4px solid var(--gold); white-space: nowrap;
+            overflow: hidden; animation: typewriter 2.5s steps(8) forwards, blinkCursor 1s step-end infinite;
+        }
+        @keyframes typewriter { from { width: 0; } to { width: 100%; } }
+        @keyframes blinkCursor { 50% { border-color: transparent; } }
+
+        /* LAYOUT & SPACING (Royal Negative Space) */
+        section {
+            min-height: 100vh; padding: 15vh 10vw; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            border-bottom: 1px solid rgba(198, 166, 100, 0.15);
+        }
+        
+        /* TYPOGRAPHY */
+        h1, h2, h3 { font-family: 'Cinzel', serif; color: var(--gold); text-transform: uppercase; letter-spacing: 0.3em; margin-bottom: 40px; }
+        h1 { font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 900; line-height: 1.1; }
+        h2 { font-size: clamp(1.8rem, 3vw, 3rem); font-weight: 700; }
+        h3 { font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 400; letter-spacing: 0.2em; }
+        p { font-size: clamp(1.2rem, 1.5vw, 1.6rem); line-height: 2; max-width: 800px; margin-bottom: 30px; font-weight: 300; }
+        .italic { font-style: italic; color: rgba(245, 245, 240, 0.8); }
+
+        /* HERO */
+        #hero h1 { text-shadow: 0 0 40px rgba(198, 166, 100, 0.3); }
+
+        /* PLAGUES */
+        .plague-box {
+            border: 1px solid rgba(198, 166, 100, 0.3); padding: 60px 40px; margin: 40px 0;
+            width: 100%; max-width: 700px; background: rgba(5, 5, 5, 0.8);
+            transition: all 0.5s ease; position: relative; overflow: hidden;
+        }
+        .plague-box::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 100%;
+            background: var(--blood); transition: width 0.5s ease;
+        }
+        .plague-box:hover { border-color: var(--blood); transform: translateY(-5px); box-shadow: 0 20px 50px rgba(139, 0, 0, 0.2); }
+        .plague-box:hover::before { width: 100%; opacity: 0.1; }
+
+        /* TRINITY HERALDRY (PURE CSS GEOMETRY) */
+        .trinity-grid { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1000px; gap: 80px; }
+        .standard { display: flex; flex-direction: column; align-items: center; gap: 30px; }
+        
+        /* AURELIAN (The Eradication Circle) */
+        .emblem-aurelian {
+            width: 80px; height: 80px; border: 2px solid var(--gold); border-radius: 50%;
+            position: relative; display: flex; justify-content: center; align-items: center;
+            transition: all 0.5s ease; cursor: crosshair;
+        }
+        .emblem-aurelian::before {
+            content: ''; position: absolute; width: 110%; height: 2px; background: var(--gold);
+            transform: rotate(-45deg); top: 50%; left: -5%;
+        }
+        .emblem-aurelian:hover { box-shadow: 0 0 30px rgba(198, 166, 100, 0.4); transform: scale(1.1); }
+
+        /* IMPERIAL (The Interlocking Echo) */
+        .emblem-imperial {
+            width: 60px; height: 60px; border: 2px solid var(--gold); position: relative;
+            display: flex; justify-content: center; align-items: center;
+            transition: all 0.5s ease; cursor: crosshair;
+        }
+        .emblem-imperial::before {
+            content: ''; position: absolute; width: 60px; height: 60px; border: 2px solid var(--gold);
+            transform: rotate(45deg); top: -10px; left: 10px;
+        }
+        .emblem-imperial:hover { box-shadow: 0 0 30px rgba(198, 166, 100, 0.4); transform: scale(1.1); }
+
+        /* OMNISCIENT (The Oracle Hexagon) */
+        .emblem-omniscient {
+            width: 80px; height: 80px; background: transparent; position: relative;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            border: none; display: flex; justify-content: center; align-items: center;
+            transition: all 0.5s ease; cursor: crosshair;
+        }
+        .emblem-omniscient::before {
+            content: ''; position: absolute; width: 100%; height: 100%;
+            background: var(--gold); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+        .emblem-omniscient::after {
+            content: ''; position: absolute; width: 65%; height: 65%;
+            background: var(--obsidian); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+        .emblem-omniscient:hover { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(198, 166, 100, 0.6)); }
+
+        /* MORTUARY LEDGER */
+        #ledger-container { margin-top: 60px; padding: 40px; border: 1px solid var(--blood); background: rgba(139, 0, 0, 0.05); }
+        #ledger { font-family: 'Cinzel', serif; font-size: clamp(1.5rem, 3vw, 2.5rem); color: var(--blood); letter-spacing: 0.1em; animation: pulseBlood 3s infinite; }
+        @keyframes pulseBlood { 0%, 100% { opacity: 0.7; text-shadow: none; } 50% { opacity: 1; text-shadow: 0 0 20px rgba(139, 0, 0, 0.8); } }
+
+        /* PRICING */
+        .price-tag { font-family: 'Cinzel', serif; font-size: clamp(2.5rem, 5vw, 4rem); color: var(--gold); margin: 30px 0; letter-spacing: 0.1em; }
+        .terms { font-size: 1.2rem; color: rgba(245, 245, 240, 0.6); letter-spacing: 0.1em; }
+
+        /* PHANTOM OATH GATE */
+        #oath-container { margin-top: 60px; text-align: center; }
+        .oath-check {
+            display: flex; align-items: center; justify-content: center; gap: 20px;
+            margin-bottom: 40px; font-family: 'Cinzel', serif; font-size: 1rem;
+            color: var(--bone); letter-spacing: 0.1em; cursor: pointer;
+        }
+        .oath-check input { accent-color: var(--gold); width: 20px; height: 20px; cursor: pointer; }
+        #contact-btn {
+            display: none; padding: 25px 60px; border: 1px solid var(--gold); background: transparent;
+            color: var(--gold); font-family: 'Cinzel', serif; font-size: 1.2rem; text-decoration: none;
+            letter-spacing: 0.3em; transition: all 0.5s ease; text-transform: uppercase;
+        }
+        #contact-btn:hover { background: var(--gold); color: var(--obsidian); box-shadow: 0 0 40px rgba(198, 166, 100, 0.3); }
+        #contact-btn.revealed { display: inline-block; animation: fadeUp 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+
+    <div id="loader"><h1 id="loader-text">ZAVARIAN</h1></div>
+
+    <section id="hero">
+        <h1>We Weaponize<br>The Void</h1>
+        <p class="italic">The Silence is Bleeding You Dry.</p>
+        <p class="italic">While you wait, your $30M assets decay in the dark. We are the cure.</p>
+    </section>
+
+    <section id="plagues">
+        <h2>The Plagues</h2>
+        <div class="plague-box">
+            <h3>The Unqualified Lead Plague</h3>
+            <p>Your pipeline is choked with ghosts. Time wasted is fortune erased.</p>
+        </div>
+        <div class="plague-box">
+            <h3>The Silence Between Millions</h3>
+            <p>The most expensive sound in ultra-luxury is nothing. Dead leads rotting in your CRM.</p>
+        </div>
+        <div class="plague-box">
+            <h3>The Blind Portfolio Syndrome</h3>
+            <p>You hold empires, yet you cannot see the invisible thread connecting buyer to asset.</p>
+        </div>
+    </section>
+
+    <section id="trinity">
+        <h2>The Trinity</h2>
+        <div class="trinity-grid">
+            <div class="standard">
+                <div class="emblem-aurelian"></div>
+                <h3>ZAVARIAN AURELIAN</h3>
+                <p>Behavioral Decryption Protocol.<br>The Plague ends here.</p>
+            </div>
+            <div class="standard">
+                <div class="emblem-imperial"></div>
+                <h3>ZAVARIAN IMPERIAL</h3>
+                <p>Cognitive Resonance Engine.<br>The dead speak again.</p>
+            </div>
+            <div class="standard">
+                <div class="emblem-omniscient"></div>
+                <h3>ZAVARIAN OMNISCIENT</h3>
+                <p>Predictive Oracle Matrix.<br>Blindness cured.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="ascendancy">
+        <h2>The Sovereign Ascendancy</h2>
+        <p>We do not rush. We orchestrate.</p>
+        <p class="italic">Deployment takes exactly 33 days. We align the architecture, we purge the plague, we deploy the oracle. You will wait, because elite outcomes demand elite patience.</p>
+        <div id="ledger-container">
+            <h3 style="color: var(--blood); margin-bottom: 20px;">The Mortuary Ledger</h3>
+            <div id="ledger">AED <span id="loss-counter">0</span></div>
+            <p style="font-size: 1rem; margin-top: 15px; color: rgba(245,245,240,0.5);">Evaporated from stale $30M+ assets while you read this.</p>
+        </div>
+    </section>
+
+    <section id="pricing">
+        <h2>The Rite of Passage</h2>
+        <div class="price-tag">$9,999 USD</div>
+        <p class="terms">50% Escrow to Initiate ($4,999.50) | 50% Upon Deployment</p>
+        <p class="terms">Sovereign Maintenance: $2,499 USD / Month</p>
+    </section>
+
+    <section id="contact">
+        <h2>Alignment</h2>
+        <p class="italic">Alignment is granted, not requested. Initial contact via DIFC Data-Compliance encrypted channel.</p>
+        <div id="oath-container">
+            <label class="oath-check">
+                <input type="checkbox" id="oath-box">
+                I am a decision-maker, and I understand the Trinity is not for the masses.
+            </label>
+            <a href="mailto:zavarian.intelligence@gmail.com" id="contact-btn">REQUEST ALIGNMENT</a>
+        </div>
+    </section>
+
+    <script>
+        // LOADER LOGIC
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+                document.body.classList.add('loaded');
+                startLossCounter();
+            }, 3000); // 3 second dramatic pause after typing finishes
+        });
+
+        // PHANTOM OATH GATE
+        const oathBox = document.getElementById('oath-box');
+        const contactBtn = document.getElementById('contact-btn');
+        oathBox.addEventListener('change', (e) => {
+            if (e.target.checked) { contactBtn.classList.add('revealed'); } 
+            else { contactBtn.classList.remove('revealed'); }
+        });
+
+        // MORTUARY LEDGER (AED 840,000/month = approx AED 11,500/hour = AED 3.2/second)
+        let lossAmount = 4200000; // Start at a high number to shock them
+        function startLossCounter() {
+            setInterval(() => {
+                lossAmount += 320; 
+                document.getElementById('loss-counter').innerText = lossAmount.toLocaleString();
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
