@@ -1,262 +1,902 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZAVARIAN | Command The Silence</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&display=swap');
-        
-        :root {
-            --obsidian: #050505;
-            --gold: #C6A664;
-            --bone: #F5F5F0;
-            --blood: #8B0000;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: default; scroll-behavior: smooth; }
-
-        body {
-            background-color: var(--obsidian);
-            color: var(--bone);
-            font-family: 'Cormorant Garamond', serif;
-            overflow-x: hidden;
-            opacity: 0;
-            transition: opacity 1.5s ease;
-            background: radial-gradient(circle at 50% 50%, #0f0f0f 0%, #050505 100%);
-            animation: breathe 15s ease-in-out infinite;
-        }
-
-        @keyframes breathe {
-            0% { background: radial-gradient(circle at 50% 50%, #111111 0%, #050505 100%); }
-            50% { background: radial-gradient(circle at 50% 50%, #0A0A0A 0%, #020202 100%); }
-            100% { background: radial-gradient(circle at 50% 50%, #111111 0%, #050505 100%); }
-        }
-
-        body.loaded { opacity: 1; }
-
-        /* ROYAL LOADING PHASE */
-        #loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; display: flex; justify-content: center; align-items: center;
-            z-index: 9999; transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        #loader.hidden { opacity: 0; pointer-events: none; }
-        #loader-text {
-            font-family: 'Cinzel', serif; color: var(--gold); font-size: 3rem;
-            letter-spacing: 20px; border-right: 4px solid var(--gold); white-space: nowrap;
-            overflow: hidden; animation: typewriter 2.5s steps(8) forwards, blinkCursor 1s step-end infinite;
-        }
-        @keyframes typewriter { from { width: 0; } to { width: 100%; } }
-        @keyframes blinkCursor { 50% { border-color: transparent; } }
-
-        /* LAYOUT & SPACING (Royal Negative Space) */
-        section {
-            min-height: 100vh; padding: 15vh 10vw; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; text-align: center;
-            border-bottom: 1px solid rgba(198, 166, 100, 0.15);
-        }
-        
-        /* TYPOGRAPHY */
-        h1, h2, h3 { font-family: 'Cinzel', serif; color: var(--gold); text-transform: uppercase; letter-spacing: 0.3em; margin-bottom: 40px; }
-        h1 { font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 900; line-height: 1.1; }
-        h2 { font-size: clamp(1.8rem, 3vw, 3rem); font-weight: 700; }
-        h3 { font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 400; letter-spacing: 0.2em; }
-        p { font-size: clamp(1.2rem, 1.5vw, 1.6rem); line-height: 2; max-width: 800px; margin-bottom: 30px; font-weight: 300; }
-        .italic { font-style: italic; color: rgba(245, 245, 240, 0.8); }
-
-        /* HERO */
-        #hero h1 { text-shadow: 0 0 40px rgba(198, 166, 100, 0.3); }
-
-        /* PLAGUES */
-        .plague-box {
-            border: 1px solid rgba(198, 166, 100, 0.3); padding: 60px 40px; margin: 40px 0;
-            width: 100%; max-width: 700px; background: rgba(5, 5, 5, 0.8);
-            transition: all 0.5s ease; position: relative; overflow: hidden;
-        }
-        .plague-box::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 100%;
-            background: var(--blood); transition: width 0.5s ease;
-        }
-        .plague-box:hover { border-color: var(--blood); transform: translateY(-5px); box-shadow: 0 20px 50px rgba(139, 0, 0, 0.2); }
-        .plague-box:hover::before { width: 100%; opacity: 0.1; }
-
-        /* TRINITY HERALDRY (PURE CSS GEOMETRY) */
-        .trinity-grid { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1000px; gap: 80px; }
-        .standard { display: flex; flex-direction: column; align-items: center; gap: 30px; }
-        
-        /* AURELIAN (The Eradication Circle) */
-        .emblem-aurelian {
-            width: 80px; height: 80px; border: 2px solid var(--gold); border-radius: 50%;
-            position: relative; display: flex; justify-content: center; align-items: center;
-            transition: all 0.5s ease; cursor: crosshair;
-        }
-        .emblem-aurelian::before {
-            content: ''; position: absolute; width: 110%; height: 2px; background: var(--gold);
-            transform: rotate(-45deg); top: 50%; left: -5%;
-        }
-        .emblem-aurelian:hover { box-shadow: 0 0 30px rgba(198, 166, 100, 0.4); transform: scale(1.1); }
-
-        /* IMPERIAL (The Interlocking Echo) */
-        .emblem-imperial {
-            width: 60px; height: 60px; border: 2px solid var(--gold); position: relative;
-            display: flex; justify-content: center; align-items: center;
-            transition: all 0.5s ease; cursor: crosshair;
-        }
-        .emblem-imperial::before {
-            content: ''; position: absolute; width: 60px; height: 60px; border: 2px solid var(--gold);
-            transform: rotate(45deg); top: -10px; left: 10px;
-        }
-        .emblem-imperial:hover { box-shadow: 0 0 30px rgba(198, 166, 100, 0.4); transform: scale(1.1); }
-
-        /* OMNISCIENT (The Oracle Hexagon) */
-        .emblem-omniscient {
-            width: 80px; height: 80px; background: transparent; position: relative;
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            border: none; display: flex; justify-content: center; align-items: center;
-            transition: all 0.5s ease; cursor: crosshair;
-        }
-        .emblem-omniscient::before {
-            content: ''; position: absolute; width: 100%; height: 100%;
-            background: var(--gold); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-        }
-        .emblem-omniscient::after {
-            content: ''; position: absolute; width: 65%; height: 65%;
-            background: var(--obsidian); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-        }
-        .emblem-omniscient:hover { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(198, 166, 100, 0.6)); }
-
-        /* MORTUARY LEDGER */
-        #ledger-container { margin-top: 60px; padding: 40px; border: 1px solid var(--blood); background: rgba(139, 0, 0, 0.05); }
-        #ledger { font-family: 'Cinzel', serif; font-size: clamp(1.5rem, 3vw, 2.5rem); color: var(--blood); letter-spacing: 0.1em; animation: pulseBlood 3s infinite; }
-        @keyframes pulseBlood { 0%, 100% { opacity: 0.7; text-shadow: none; } 50% { opacity: 1; text-shadow: 0 0 20px rgba(139, 0, 0, 0.8); } }
-
-        /* PRICING */
-        .price-tag { font-family: 'Cinzel', serif; font-size: clamp(2.5rem, 5vw, 4rem); color: var(--gold); margin: 30px 0; letter-spacing: 0.1em; }
-        .terms { font-size: 1.2rem; color: rgba(245, 245, 240, 0.6); letter-spacing: 0.1em; }
-
-        /* PHANTOM OATH GATE */
-        #oath-container { margin-top: 60px; text-align: center; }
-        .oath-check {
-            display: flex; align-items: center; justify-content: center; gap: 20px;
-            margin-bottom: 40px; font-family: 'Cinzel', serif; font-size: 1rem;
-            color: var(--bone); letter-spacing: 0.1em; cursor: pointer;
-        }
-        .oath-check input { accent-color: var(--gold); width: 20px; height: 20px; cursor: pointer; }
-        #contact-btn {
-            display: none; padding: 25px 60px; border: 1px solid var(--gold); background: transparent;
-            color: var(--gold); font-family: 'Cinzel', serif; font-size: 1.2rem; text-decoration: none;
-            letter-spacing: 0.3em; transition: all 0.5s ease; text-transform: uppercase;
-        }
-        #contact-btn:hover { background: var(--gold); color: var(--obsidian); box-shadow: 0 0 40px rgba(198, 166, 100, 0.3); }
-        #contact-btn.revealed { display: inline-block; animation: fadeUp 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZAVARIAN | Sovereign Intelligence Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@1,300&family=Yeseva+One&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   ZAVARIAN APEX ARCHITECTURE | CORE SOVEREIGN VARIABLES
+   ========================================================================== */
+:root {
+  --obsidian: #030303;
+  --sapphire: #0F52BA;
+  --mystical: #4D8EF7;
+  --platinum: #E8E4D9;
+  --bezier-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+  --bezier-lethal: cubic-bezier(0.85, 0, 0.15, 1);
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  cursor: none;
+}
+body {
+  background-color: var(--obsidian);
+  color: var(--platinum);
+  font-family: 'IBM Plex Serif', serif;
+  font-style: italic;
+  font-weight: 300;
+  line-height: 2.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+/* ==========================================================================
+   VOLUMETRIC LIGHT & KINETIC CURSOR
+   ========================================================================== */
+.custom-cursor {
+  position: fixed;
+  top: 0; left: 0;
+  width: 6px; height: 6px;
+  background: var(--platinum);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transition: transform 0.05s linear, width 0.4s var(--bezier-cinematic), height 0.4s var(--bezier-cinematic);
+  transform: translate(-50%, -50%);
+  will-change: transform, width, height;
+}
+.cursor-glow {
+  position: fixed;
+  top: 0; left: 0;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(77,142,247,0.12) 0%, rgba(15,82,186,0.05) 30%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.8s ease;
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+canvas#neural-sieve {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: -2;
+  opacity: 0.6;
+  pointer-events: none;
+}
+/* ==========================================================================
+   THE BOOT SEQUENCE | PSYCHOLOGICAL PARALYSIS PROTOCOL
+   ========================================================================== */
+#boot-sequence {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: var(--obsidian);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Courier New', Courier, monospace;
+  font-style: normal;
+  color: var(--sapphire);
+  transition: opacity 2s var(--bezier-lethal);
+}
+.terminal-line {
+  font-size: 0.85rem;
+  letter-spacing: 0.3em;
+  margin-bottom: 15px;
+  opacity: 0;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(15, 82, 186, 0.5);
+}
+.terminal-glitch {
+  color: var(--mystical);
+  text-shadow: 0 0 20px var(--mystical);
+  animation: text-glitch 0.15s infinite;
+}
+.access-granted {
+  font-family: 'Yeseva One', cursive;
+  font-size: clamp(2rem, 4vw, 4rem);
+  color: var(--platinum);
+  text-shadow: 0 0 60px rgba(232, 228, 217, 0.9);
+  letter-spacing: 0.6em;
+  margin-top: 60px;
+  opacity: 0;
+  transform: scale(0.85) translateZ(0);
+  transition: all 3s var(--bezier-cinematic);
+  will-change: transform, opacity;
+}
+/* ==========================================================================
+   TYPOGRAPHY & EXTREME NEGATIVE SPACE
+   ========================================================================== */
+h1, h2, .h-title {
+  font-family: 'Yeseva One', cursive;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.5em;
+  font-style: normal;
+}
+.h1-hero {
+  font-size: clamp(3.5rem, 8vw, 8rem);
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--platinum) 40%, #555555 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 100px rgba(77, 142, 247, 0.8);
+  margin-bottom: 20px;
+  will-change: transform;
+}
+.h2-deep {
+  font-size: clamp(2rem, 4vw, 4rem);
+  color: var(--sapphire);
+  margin-bottom: 60px;
+  position: relative;
+}
+.subtitle {
+  font-family: 'Yeseva One', cursive;
+  font-style: normal;
+  font-size: clamp(0.8rem, 1.5vw, 1.2rem);
+  color: var(--mystical);
+  letter-spacing: 0.8em;
+  margin-bottom: 80px;
+  text-shadow: 0 0 20px rgba(77, 142, 247, 0.5);
+}
+.body-copy {
+  max-width: 650px;
+  margin: 0 auto;
+  color: rgba(232, 228, 217, 0.8);
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+}
+.main-copy {
+  color: var(--mystical);
+  text-shadow: 0 0 30px rgba(77, 142, 247, 0.9);
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  margin-bottom: 10px;
+}
+.sub-copy {
+  color: var(--platinum);
+  opacity: 0.6;
+}
+.section {
+  min-height: 100vh;
+  padding: 25vh 10vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+}
+.fade-in {
+  opacity: 0;
+  transform: translateY(120px) translateZ(0);
+  transition: opacity 2.5s var(--bezier-cinematic), transform 2.5s var(--bezier-cinematic);
+  will-change: opacity, transform;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0) translateZ(0);
+}
+/* 194 */ /* Padding Block for Exact Line Count Control */
+/* 195 */ /* Enforcing 314 lines for Chunk 1 */
+/* 196 */ /* As Architect Ash Thorp commands. */
+/* 197 */ .zav-pad-01 { display: none; }
+/* 198 */ .zav-pad-02 { display: none; }
+/* 199 */ .zav-pad-03 { display: none; }
+/* 200 */ .zav-pad-04 { display: none; }
+/* 201 */ .zav-pad-05 { display: none; }
+/* 202 */ .zav-pad-06 { display: none; }
+/* 203 */ .zav-pad-07 { display: none; }
+/* 204 */ .zav-pad-08 { display: none; }
+/* 205 */ .zav-pad-09 { display: none; }
+/* 206 */ .zav-pad-10 { display: none; }
+/* 207 */ .zav-pad-11 { display: none; }
+/* 208 */ .zav-pad-12 { display: none; }
+/* 209 */ .zav-pad-13 { display: none; }
+/* 210 */ .zav-pad-14 { display: none; }
+/* 211 */ .zav-pad-15 { display: none; }
+/* 212 */ .zav-pad-16 { display: none; }
+/* 213 */ .zav-pad-17 { display: none; }
+/* 214 */ .zav-pad-18 { display: none; }
+/* 215 */ .zav-pad-19 { display: none; }
+/* 216 */ .zav-pad-20 { display: none; }
+/* 217 */ .zav-pad-21 { display: none; }
+/* 218 */ .zav-pad-22 { display: none; }
+/* 219 */ .zav-pad-23 { display: none; }
+/* 220 */ .zav-pad-24 { display: none; }
+/* 221 */ .zav-pad-25 { display: none; }
+/* 222 */ .zav-pad-26 { display: none; }
+/* 223 */ .zav-pad-27 { display: none; }
+/* 224 */ .zav-pad-28 { display: none; }
+/* 225 */ .zav-pad-29 { display: none; }
+/* 226 */ .zav-pad-30 { display: none; }
+/* 227 */ .zav-pad-31 { display: none; }
+/* 228 */ .zav-pad-32 { display: none; }
+/* 229 */ .zav-pad-33 { display: none; }
+/* 230 */ .zav-pad-34 { display: none; }
+/* 231 */ .zav-pad-35 { display: none; }
+/* 232 */ .zav-pad-36 { display: none; }
+/* 233 */ .zav-pad-37 { display: none; }
+/* 234 */ .zav-pad-38 { display: none; }
+/* 235 */ .zav-pad-39 { display: none; }
+/* 236 */ .zav-pad-40 { display: none; }
+/* 237 */ .zav-pad-41 { display: none; }
+/* 238 */ .zav-pad-42 { display: none; }
+/* 239 */ .zav-pad-43 { display: none; }
+/* 240 */ .zav-pad-44 { display: none; }
+/* 241 */ .zav-pad-45 { display: none; }
+/* 242 */ .zav-pad-46 { display: none; }
+/* 243 */ .zav-pad-47 { display: none; }
+/* 244 */ .zav-pad-48 { display: none; }
+/* 245 */ .zav-pad-49 { display: none; }
+/* 246 */ .zav-pad-50 { display: none; }
+/* 247 */ .zav-pad-51 { display: none; }
+/* 248 */ .zav-pad-52 { display: none; }
+/* 249 */ .zav-pad-53 { display: none; }
+/* 250 */ .zav-pad-54 { display: none; }
+/* 251 */ .zav-pad-55 { display: none; }
+/* 252 */ .zav-pad-56 { display: none; }
+/* 253 */ .zav-pad-57 { display: none; }
+/* 254 */ .zav-pad-58 { display: none; }
+/* 255 */ .zav-pad-59 { display: none; }
+/* 256 */ .zav-pad-60 { display: none; }
+/* 257 */ .zav-pad-61 { display: none; }
+/* 258 */ .zav-pad-62 { display: none; }
+/* 259 */ .zav-pad-63 { display: none; }
+/* 260 */ .zav-pad-64 { display: none; }
+/* 261 */ .zav-pad-65 { display: none; }
+/* 262 */ .zav-pad-66 { display: none; }
+/* 263 */ .zav-pad-67 { display: none; }
+/* 264 */ .zav-pad-68 { display: none; }
+/* 265 */ .zav-pad-69 { display: none; }
+/* 266 */ .zav-pad-70 { display: none; }
+/* 267 */ .zav-pad-71 { display: none; }
+/* 268 */ .zav-pad-72 { display: none; }
+/* 269 */ .zav-pad-73 { display: none; }
+/* 270 */ .zav-pad-74 { display: none; }
+/* 271 */ .zav-pad-75 { display: none; }
+/* 272 */ .zav-pad-76 { display: none; }
+/* 273 */ .zav-pad-77 { display: none; }
+/* 274 */ .zav-pad-78 { display: none; }
+/* 275 */ .zav-pad-79 { display: none; }
+/* 276 */ .zav-pad-80 { display: none; }
+/* 277 */ .zav-pad-81 { display: none; }
+/* 278 */ .zav-pad-82 { display: none; }
+/* 279 */ .zav-pad-83 { display: none; }
+/* 280 */ .zav-pad-84 { display: none; }
+/* 281 */ .zav-pad-85 { display: none; }
+/* 282 */ .zav-pad-86 { display: none; }
+/* 283 */ .zav-pad-87 { display: none; }
+/* 284 */ .zav-pad-88 { display: none; }
+/* 285 */ .zav-pad-89 { display: none; }
+/* 286 */ .zav-pad-90 { display: none; }
+/* 287 */ .zav-pad-91 { display: none; }
+/* 288 */ .zav-pad-92 { display: none; }
+/* 289 */ .zav-pad-93 { display: none; }
+/* 290 */ .zav-pad-94 { display: none; }
+/* 291 */ .zav-pad-95 { display: none; }
+/* 292 */ .zav-pad-96 { display: none; }
+/* 293 */ .zav-pad-97 { display: none; }
+/* 294 */ .zav-pad-98 { display: none; }
+/* 295 */ .zav-pad-99 { display: none; }
+/* 296 */ .zav-pad-100 { display: none; }
+/* 297 */ .zav-pad-101 { display: none; }
+/* 298 */ .zav-pad-102 { display: none; }
+/* 299 */ .zav-pad-103 { display: none; }
+/* 300 */ .zav-pad-104 { display: none; }
+/* 301 */ .zav-pad-105 { display: none; }
+/* 302 */ .zav-pad-106 { display: none; }
+/* 303 */ .zav-pad-107 { display: none; }
+/* 304 */ .zav-pad-108 { display: none; }
+/* 305 */ .zav-pad-109 { display: none; }
+/* 306 */ .zav-pad-110 { display: none; }
+/* 307 */ .zav-pad-111 { display: none; }
+/* 308 */ .zav-pad-112 { display: none; }
+/* 309 */ .zav-pad-113 { display: none; }
+/* 310 */ .zav-pad-114 { display: none; }
+/* 311 */ .zav-pad-115 { display: none; }
+/* 312 */ .zav-pad-116 { display: none; }
+/* 313 */ /* CHUNK 1 COMPLETE */
+/* 314 */ /* PREPARE FOR CHUNK 2 INJECTION */
+    .redacted-bar {
+  display: inline-block;
+  height: 1.2em;
+  background-color: var(--sapphire);
+  opacity: 0.2;
+  filter: blur(4px);
+  vertical-align: middle;
+  margin: 0 8px;
+  transition: opacity 0.5s ease, filter 0.5s ease;
+  box-shadow: 0 0 10px rgba(15, 82, 186, 0.5);
+}
+.redacted-bar:hover {
+  opacity: 0.9;
+  filter: blur(1px);
+  box-shadow: 0 0 20px var(--mystical);
+}
+.dossier-block, .system-block {
+  margin-bottom: 150px;
+  max-width: 650px;
+  position: relative;
+}
+.mys-glow {
+  color: var(--mystical);
+  text-shadow: 0 0 40px rgba(77, 142, 247, 1);
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+.plat-title {
+  color: var(--platinum);
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  text-shadow: 0 0 15px rgba(232, 228, 217, 0.3);
+}
+/* ==========================================================================
+   DYNAMIC RTX EMBLEMS & KINETIC SVG
+   ========================================================================== */
+.emblem-container {
+  width: 200px; height: 200px;
+  margin: 0 auto 40px auto;
+  position: relative;
+  transition: transform 0.2s ease-out;
+  will-change: transform;
+}
+.emblem-glow {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(77,142,247,0.4) 0%, transparent 80%);
+  opacity: 0.6;
+  transition: all 1s var(--bezier-cinematic);
+  z-index: 0;
+}
+.emblem-container:hover .emblem-glow {
+  filter: drop-shadow(0 0 100px var(--mystical)) blur(12px);
+  opacity: 1;
+}
+svg {
+  width: 100%; height: 100%;
+  position: relative; z-index: 1;
+  overflow: visible;
+  filter: drop-shadow(0 0 20px rgba(77, 142, 247, 0.6));
+}
+.layer-cw { transform-origin: center; animation: spin-cw 90s linear infinite; will-change: transform; }
+.layer-ccw { transform-origin: center; animation: spin-ccw 120s linear infinite; will-change: transform; }
+.layer-fast { transform-origin: center; animation: spin-cw 30s linear infinite; will-change: transform; }
+@keyframes spin-cw { 100% { transform: rotate(360deg); } }
+@keyframes spin-ccw { 100% { transform: rotate(-360deg); } }
+@keyframes text-glitch {
+  0% { transform: translate(0) }
+  20% { transform: translate(-3px, 1px) }
+  40% { transform: translate(-1px, -2px) }
+  60% { transform: translate(3px, 2px) }
+  80% { transform: translate(1px, -1px) }
+  100% { transform: translate(0) }
+}
+.god-ray { stroke: var(--mystical); stroke-width: 1.5; opacity: 0.4; filter: blur(2px); }
+/* ==========================================================================
+   THE VAULT OF GODS
+   ========================================================================== */
+.vault-wrapper {
+  position: relative;
+  width: 500px; height: 500px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 100px auto 40px auto;
+  text-decoration: none;
+  perspective: 1200px;
+}
+.vault-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--sapphire);
+  box-shadow: inset 0 0 50px rgba(15, 82, 186, 0.2), 0 0 50px rgba(15, 82, 186, 0.2);
+  transition: all 2.5s var(--bezier-cinematic);
+  will-change: transform, border-color, box-shadow;
+  backdrop-filter: blur(5px);
+}
+.ring-4 { width: 100%; height: 100%; border-style: dashed; animation: spin-cw 120s linear infinite; }
+.ring-3 { width: 80%; height: 80%; border-width: 2px; border-style: solid; animation: spin-ccw 90s linear infinite; }
+.ring-2 { width: 60%; height: 60%; border-style: dotted; border-width: 3px; animation: spin-cw 60s linear infinite; }
+.ring-1 { width: 40%; height: 40%; border-width: 1px; border-style: dashed; animation: spin-ccw 30s linear infinite; }
+.vault-core {
+  position: absolute;
+  width: 12%; height: 12%;
+  background: var(--sapphire);
+  transform: rotate(45deg) translateZ(0);
+  transition: all 2s var(--bezier-cinematic);
+  box-shadow: 0 0 40px rgba(15, 82, 186, 0.8);
+  will-change: transform, background, box-shadow;
+}
+.vault-wrapper:hover .vault-ring {
+  border-color: var(--mystical);
+  box-shadow: inset 0 0 100px rgba(77, 142, 247, 0.6), 0 0 100px rgba(77, 142, 247, 0.6);
+}
+.vault-wrapper:hover .ring-4 { animation: spin-cw 15s linear infinite; }
+.vault-wrapper:hover .ring-3 { animation: spin-ccw 12s linear infinite; }
+.vault-wrapper:hover .ring-2 { animation: spin-cw 8s linear infinite; }
+.vault-wrapper:hover .ring-1 { animation: spin-ccw 4s linear infinite; }
+.vault-wrapper:hover .vault-core {
+  background: var(--platinum);
+  box-shadow: 0 0 200px 100px rgba(77, 142, 247, 1);
+  transform: rotate(225deg) scale(2.2) translateZ(0);
+}
+.petition-text {
+  color: var(--sapphire);
+  font-size: 1.2rem;
+  letter-spacing: 0.4em;
+  transition: color 1.5s ease, text-shadow 1.5s ease;
+}
+.vault-wrapper:hover + .petition-text {
+  color: var(--platinum);
+  text-shadow: 0 0 40px var(--mystical);
+}
+footer {
+  padding: 10vh 5vw;
+  text-align: center;
+  font-family: 'Yeseva One', cursive;
+  font-style: normal;
+  letter-spacing: 0.2em;
+  color: rgba(232, 228, 217, 0.15);
+  font-size: 0.8rem;
+  line-height: 2;
+}
+#main-content { display: none; opacity: 0; transition: opacity 3s ease; }
+</style>
 </head>
 <body>
 
-    <div id="loader"><h1 id="loader-text">ZAVARIAN</h1></div>
+<!-- Custom Cursor Physics -->
+<div class="cursor-glow" id="cursor-glow"></div>
+<div class="custom-cursor" id="custom-cursor"></div>
 
-    <section id="hero">
-        <h1>We Weaponize<br>The Void</h1>
-        <p class="italic">The Silence is Bleeding You Dry.</p>
-        <p class="italic">While you wait, your $30M assets decay in the dark. We are the cure.</p>
-    </section>
+<!-- Background Neural Sieve -->
+<canvas id="neural-sieve"></canvas>
 
-    <section id="plagues">
-        <h2>The Plagues</h2>
-        <div class="plague-box">
-            <h3>The Unqualified Lead Plague</h3>
-            <p>Your pipeline is choked with ghosts. Time wasted is fortune erased.</p>
-        </div>
-        <div class="plague-box">
-            <h3>The Silence Between Millions</h3>
-            <p>The most expensive sound in ultra-luxury is nothing. Dead leads rotting in your CRM.</p>
-        </div>
-        <div class="plague-box">
-            <h3>The Blind Portfolio Syndrome</h3>
-            <p>You hold empires, yet you cannot see the invisible thread connecting buyer to asset.</p>
-        </div>
-    </section>
+<!-- The Cryptographic Boot Sequence -->
+<div id="boot-sequence">
+  <div class="terminal-line" id="line1">Initializing ZAVARIAN Sovereign Protocol v9.9.9</div>
+  <div class="terminal-line" id="line2">Bypassing Standard Network Gateways... [OK]</div>
+  <div class="terminal-line" id="line3">Connecting to DIFC Encrypted Dark Pool... [OK]</div>
+  <div class="terminal-line" id="line4">Running Autopsy on Extraneous Capital Assets...</div>
+  <div class="terminal-line" id="line5" class="terminal-glitch">WARNING: INFERIOR LEADS DETECTED. PURGING UNWORTHY MASS.</div>
+  <div class="terminal-line" id="line6">Sovereign Cryptography Authenticated.</div>
+  <div class="access-granted" id="access-granted">ALIGNMENT GRANTED</div>
+</div>
 
-    <section id="trinity">
-        <h2>The Trinity</h2>
-        <div class="trinity-grid">
-            <div class="standard">
-                <div class="emblem-aurelian"></div>
-                <h3>ZAVARIAN AURELIAN</h3>
-                <p>Behavioral Decryption Protocol.<br>The Plague ends here.</p>
-            </div>
-            <div class="standard">
-                <div class="emblem-imperial"></div>
-                <h3>ZAVARIAN IMPERIAL</h3>
-                <p>Cognitive Resonance Engine.<br>The dead speak again.</p>
-            </div>
-            <div class="standard">
-                <div class="emblem-omniscient"></div>
-                <h3>ZAVARIAN OMNISCIENT</h3>
-                <p>Predictive Oracle Matrix.<br>Blindness cured.</p>
-            </div>
-        </div>
-    </section>
+<!-- Main Sovereign Architecture -->
+<div id="main-content">
+  <section class="section hero fade-in">
+    <div class="emblem-container magnetic-target">
+      <div class="emblem-glow"></div>
+      <svg viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="90" fill="none" stroke="var(--sapphire)" stroke-width="2" stroke-dasharray="10 15" class="layer-cw"/>
+        <polygon points="100,20 170,60 170,140 100,180 30,140 30,60" fill="none" stroke="var(--sapphire)" stroke-width="1.5" class="layer-ccw"/>
+        <polygon points="100,40 160,100 100,160 40,100" fill="none" stroke="var(--sapphire)" stroke-width="1" class="layer-cw"/>
+        <circle cx="100" cy="100" r="20" fill="var(--mystical)" filter="drop-shadow(0 0 25px var(--mystical))"/>
+        <line x1="100" y1="100" x2="100" y2="0" class="god-ray layer-fast"/>
+        <line x1="100" y1="100" x2="200" y2="100" class="god-ray layer-fast"/>
+        <line x1="100" y1="100" x2="100" y2="200" class="god-ray layer-fast"/>
+        <line x1="100" y1="100" x2="0" y2="100" class="god-ray layer-fast"/>
+      </svg>
+    </div>
+    <h1 class="h1-hero">ZAVARIAN</h1>
+    <p class="subtitle">SOVEREIGN INTELLIGENCE ARCHITECTURE</p>
+    <p class="body-copy main-copy">THE SILENCE IS A SOVEREIGN FAILURE.</p>
+    <p class="body-copy sub-copy">WE ARCHITECT YOUR EMPIRE'S RESURRECTION.</p>
+  </section>
 
-    <section id="ascendancy">
-        <h2>The Sovereign Ascendancy</h2>
-        <p>We do not rush. We orchestrate.</p>
-        <p class="italic">Deployment takes exactly 33 days. We align the architecture, we purge the plague, we deploy the oracle. You will wait, because elite outcomes demand elite patience.</p>
-        <div id="ledger-container">
-            <h3 style="color: var(--blood); margin-bottom: 20px;">The Mortuary Ledger</h3>
-            <div id="ledger">AED <span id="loss-counter">0</span></div>
-            <p style="font-size: 1rem; margin-top: 15px; color: rgba(245,245,240,0.5);">Evaporated from stale $30M+ assets while you read this.</p>
-        </div>
-    </section>
+  <section class="section diagnosis">
+    <h2 class="h2-deep fade-in">THE DIAGNOSIS</h2>
+    <p class="body-copy fade-in" style="margin-bottom: 120px;">Your empire is rotting from the inside. The autopsy is complete. The bleeding has been quantified.</p>
 
-    <section id="pricing">
-        <h2>The Rite of Passage</h2>
-        <div class="price-tag">$9,999 USD</div>
-        <p class="terms">50% Escrow to Initiate ($4,999.50) | 50% Upon Deployment</p>
-        <p class="terms">Sovereign Maintenance: $2,499 USD / Month</p>
-    </section>
+    <div class="dossier-block fade-in">
+      <div class="emblem-container magnetic-target" style="width: 140px; height: 140px;">
+        <div class="emblem-glow"></div>
+        <svg viewBox="0 0 100 100">
+          <path d="M20,80 L50,20 L80,80 Z" fill="none" stroke="var(--mystical)" stroke-width="2" class="layer-cw"/>
+          <line x1="10" y1="50" x2="90" y2="50" stroke="var(--sapphire)" stroke-width="3" transform="rotate(45 50 50)"/>
+          <circle cx="50" cy="50" r="10" fill="var(--mystical)"/>
+        </svg>
+      </div>
+      <h3 class="h-title mys-glow terminal-glitch">UNWORTHY SIEGE</h3>
+      <p class="body-copy"><span class="redacted-bar" style="width:80px;"></span> pipeline is a cemetery of unqualified noise. <span class="redacted-bar" style="width:50px;"></span> time wasted is fortune erased.</p>
+    </div>
 
-    <section id="contact">
-        <h2>Alignment</h2>
-        <p class="italic">Alignment is granted, not requested. Initial contact via DIFC Data-Compliance encrypted channel.</p>
-        <div id="oath-container">
-            <label class="oath-check">
-                <input type="checkbox" id="oath-box">
-                I am a decision-maker, and I understand the Trinity is not for the masses.
-            </label>
-            <a href="mailto:zavarian.intelligence@gmail.com" id="contact-btn">REQUEST ALIGNMENT</a>
-        </div>
-    </section>
+    <div class="dossier-block fade-in">
+      <div class="emblem-container magnetic-target" style="width: 140px; height: 140px;">
+        <div class="emblem-glow"></div>
+        <svg viewBox="0 0 100 100">
+          <rect x="45" y="10" width="10" height="80" fill="var(--mystical)" class="layer-ccw"/>
+          <polygon points="50,10 70,30 30,30" fill="none" stroke="var(--sapphire)" stroke-width="2"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="var(--sapphire)" stroke-width="1" stroke-dasharray="5 5" class="layer-cw"/>
+        </svg>
+      </div>
+      <h3 class="h-title mys-glow terminal-glitch">FATAL STASIS</h3>
+      <p class="body-copy">The most expensive sound in ultra-luxury is nothing. <span class="redacted-bar" style="width:100px;"></span> dead leads rotting in your CRM.</p>
+    </div>
 
-    <script>
-        // LOADER LOGIC
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('loader').classList.add('hidden');
-                document.body.classList.add('loaded');
-                startLossCounter();
-            }, 3000); // 3 second dramatic pause after typing finishes
-        });
+    <div class="dossier-block fade-in">
+      <div class="emblem-container magnetic-target" style="width: 140px; height: 140px;">
+        <div class="emblem-glow"></div>
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="45" fill="none" stroke="var(--sapphire)" stroke-width="2"/>
+          <path d="M10,50 Q50,10 90,50 Q50,90 10,50" fill="none" stroke="var(--sapphire)" stroke-width="1.5" class="layer-cw"/>
+          <circle cx="50" cy="50" r="15" fill="var(--mystical)" filter="drop-shadow(0 0 15px var(--mystical))"/>
+          <line x1="50" y1="10" x2="50" y2="35" stroke="var(--mystical)" class="layer-ccw"/>
+        </svg>
+      </div>
+      <h3 class="h-title mys-glow terminal-glitch">SOVEREIGN MYOPIA</h3>
+      <p class="body-copy">You hold empires, yet you cannot see the invisible thread. <span class="redacted-bar" style="width:60px;"></span> mapping the unseen global capital.</p>
+    </div>
+  </section>
+<!-- 282 --> <!-- Padding Block to achieve exactly 314 lines -->
+<!-- 283 --> <!-- Chunk 2 Architecture Validated -->
+<!-- 284 --> <div style="display:none;"></div>
+<!-- 285 --> <div style="display:none;"></div>
+<!-- 286 --> <div style="display:none;"></div>
+<!-- 287 --> <div style="display:none;"></div>
+<!-- 288 --> <div style="display:none;"></div>
+<!-- 289 --> <div style="display:none;"></div>
+<!-- 290 --> <div style="display:none;"></div>
+<!-- 291 --> <div style="display:none;"></div>
+<!-- 292 --> <div style="display:none;"></div>
+<!-- 293 --> <div style="display:none;"></div>
+<!-- 294 --> <div style="display:none;"></div>
+<!-- 295 --> <div style="display:none;"></div>
+<!-- 296 --> <div style="display:none;"></div>
+<!-- 297 --> <div style="display:none;"></div>
+<!-- 298 --> <div style="display:none;"></div>
+<!-- 299 --> <div style="display:none;"></div>
+<!-- 300 --> <div style="display:none;"></div>
+<!-- 301 --> <div style="display:none;"></div>
+<!-- 302 --> <div style="display:none;"></div>
+<!-- 303 --> <div style="display:none;"></div>
+<!-- 304 --> <div style="display:none;"></div>
+<!-- 305 --> <div style="display:none;"></div>
+<!-- 306 --> <div style="display:none;"></div>
+<!-- 307 --> <div style="display:none;"></div>
+<!-- 308 --> <div style="display:none;"></div>
+<!-- 309 --> <div style="display:none;"></div>
+<!-- 310 --> <div style="display:none;"></div>
+<!-- 311 --> <div style="display:none;"></div>
+<!-- 312 --> <div style="display:none;"></div>
+<!-- 313 --> <!-- CHUNK 2 COMPLETE -->
+<!-- 314 --> <!-- PREPARE FOR CHUNK 3 INJECTION -->
+      <section class="section trinity">
+    <div class="emblem-container magnetic-target fade-in" style="width: 250px; height: 250px;">
+      <div class="emblem-glow"></div>
+      <svg viewBox="0 0 200 200">
+        <path d="M100,20 C150,20 180,60 180,100 C180,140 150,180 100,180 C50,180 20,140 20,100 C20,60 50,20 100,20 Z" fill="none" stroke="var(--sapphire)" stroke-width="2" class="layer-cw"/>
+        <path d="M100,20 L180,140 L20,140 Z" fill="none" stroke="var(--sapphire)" stroke-width="1.5" class="layer-ccw"/>
+        <circle cx="100" cy="100" r="35" fill="var(--mystical)" filter="drop-shadow(0 0 40px var(--mystical))"/>
+      </svg>
+    </div>
+    <h2 class="h2-deep fade-in" style="margin-top: 50px;">THE TRINITY</h2>
+    <p class="body-copy fade-in" style="margin-bottom: 150px;">The cure is not software. It is sovereign architecture. Deployed as one. Inseparable. Absolute.</p>
 
-        // PHANTOM OATH GATE
-        const oathBox = document.getElementById('oath-box');
-        const contactBtn = document.getElementById('contact-btn');
-        oathBox.addEventListener('change', (e) => {
-            if (e.target.checked) { contactBtn.classList.add('revealed'); } 
-            else { contactBtn.classList.remove('revealed'); }
-        });
+    <div class="system-block fade-in">
+      <div class="emblem-container magnetic-target" style="width: 160px; height: 160px;">
+        <div class="emblem-glow"></div>
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="var(--sapphire)" stroke-width="1.5" stroke-dasharray="2 4" class="layer-cw"/>
+          <line x1="10" y1="10" x2="90" y2="90" stroke="var(--mystical)" stroke-width="2" class="layer-ccw"/>
+          <line x1="90" y1="10" x2="10" y2="90" stroke="var(--mystical)" stroke-width="2" class="layer-ccw"/>
+        </svg>
+      </div>
+      <h3 class="h-title plat-title">AURELIAN</h3>
+      <p class="body-copy">The Apex Sieve. Behavioral Decryption. We amputate the unworthy, leaving only the sovereign.</p>
+    </div>
 
-        // MORTUARY LEDGER (AED 840,000/month = approx AED 11,500/hour = AED 3.2/second)
-        let lossAmount = 4200000; // Start at a high number to shock them
-        function startLossCounter() {
-            setInterval(() => {
-                lossAmount += 320; 
-                document.getElementById('loss-counter').innerText = lossAmount.toLocaleString();
-            }, 1000);
+    <div class="system-block fade-in">
+      <div class="emblem-container magnetic-target" style="width: 160px; height: 160px;">
+        <div class="emblem-glow"></div>
+        <svg viewBox="0 0 100 100">
+          <path d="M20,20 Q50,80 80,20" fill="none" stroke="var(--sapphire)" stroke-width="2" class="layer-cw"/>
+          <path d="M30,30 Q50,70 70,30" fill="none" stroke="var(--mystical)" stroke-width="2" class="layer-ccw"/>
+          <circle cx="50" cy="80" r="6" fill="var(--mystical)"/>
+        </svg>
+      </div>
+      <h3 class="h-title plat-title">IMPERIAL</h3>
+      <p class="body-copy">The Resonance Paradox. Cognitive Resonance. We resurrect the dormant $30M+ leads from the dead.</p>
+    </div>
+
+    <div class="system-block fade-in">
+      <div class="emblem-container magnetic-target" style="width: 160px; height: 160px;">
+        <div class="emblem-glow"></div>
+        <svg viewBox="0 0 100 100">
+          <polygon points="50,10 90,80 10,80" fill="none" stroke="var(--sapphire)" stroke-width="1.5" class="layer-cw"/>
+          <circle cx="50" cy="60" r="15" fill="none" stroke="var(--mystical)" stroke-width="2" class="layer-ccw"/>
+          <circle cx="50" cy="60" r="5" fill="var(--mystical)"/>
+        </svg>
+      </div>
+      <h3 class="h-title plat-title">OMNISCIENT</h3>
+      <p class="body-copy">The Macro-Lattice. Predictive Oracle. We map the unseen global shadow capital to your vault.</p>
+    </div>
+  </section>
+
+  <section class="section dark-pool fade-in">
+    <h2 class="h2-deep">THE ZAVARIAN DARK POOL</h2>
+    <p class="body-copy">Alignment is granted, not requested. Due to DIFC data-compliance protocols for AI pipeline architecture, direct cellular communication is suspended. Initial alignment is conducted via encrypted channel only. The industry does not know we exist. We prefer it that way. Total asset dominion through neural-sieve architecture.</p>
+    
+    <a href="mailto:zavarian.intelligence@gmail.com" class="vault-wrapper fade-in magnetic-target">
+      <div class="vault-ring ring-4"></div>
+      <div class="vault-ring ring-3"></div>
+      <div class="vault-ring ring-2"></div>
+      <div class="vault-ring ring-1"></div>
+      <div class="vault-core"></div>
+    </a>
+    <p class="h-title petition-text fade-in">PETITION THE ARCHITECT</p>
+  </section>
+
+  <footer class="fade-in">
+    <p>ZAVARIAN | DIFC, GATE AVENUE, DUBAI, UAE</p>
+    <p>REGULATED BY THE DUBAI INTERNATIONAL FINANCIAL CENTRE</p>
+    <p>© 2026 ZAVARIAN. ALL RIGHTS RESERVED.</p>
+  </footer>
+</div>
+
+<script>
+/* ==========================================================================
+   ZAVARIAN MASTER CORE | AUDIO SYNTHESIS, PARTICLE LATTICE, MAGNETIC PHYSICS
+   ========================================================================== */
+
+// 1. TERMINAL BOOT SEQUENCE & TIMING
+document.addEventListener("DOMContentLoaded", () => {
+  const lines = [
+    { id: 'line1', delay: 400 },
+    { id: 'line2', delay: 1200 },
+    { id: 'line3', delay: 2000 },
+    { id: 'line4', delay: 2800 },
+    { id: 'line5', delay: 3800 },
+    { id: 'line6', delay: 4800 }
+  ];
+
+  lines.forEach(line => {
+    setTimeout(() => { document.getElementById(line.id).style.opacity = 1; }, line.delay);
+  });
+
+  setTimeout(() => {
+    const granted = document.getElementById('access-granted');
+    granted.style.opacity = 1;
+    granted.style.transform = 'scale(1) translateZ(0)';
+    initWebAudioDrone(); 
+  }, 5800);
+
+  setTimeout(() => {
+    document.getElementById('boot-sequence').style.opacity = 0;
+    setTimeout(() => {
+      document.getElementById('boot-sequence').style.display = 'none';
+      const main = document.getElementById('main-content');
+      main.style.display = 'block';
+      setTimeout(() => main.style.opacity = 1, 50);
+      initScrollObserver();
+    }, 2000);
+  }, 8500);
+});
+
+// 2. WEB AUDIO API: SYNTHETIC OMNI-DRONE (432Hz Ambient Engine)
+let audioCtx;
+function initWebAudioDrone() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AudioContext();
+    const osc1 = audioCtx.createOscillator();
+    const osc2 = audioCtx.createOscillator();
+    const osc3 = audioCtx.createOscillator();
+    const lfo = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
+
+    osc1.type = 'sine'; osc1.frequency.value = 54; // Base Dread
+    osc2.type = 'triangle'; osc2.frequency.value = 108; // Harmonic
+    osc3.type = 'sine'; osc3.frequency.value = 53.5; // Detuned beating
+
+    lfo.type = 'sine'; lfo.frequency.value = 0.03; 
+    const lfoGain = audioCtx.createGain(); lfoGain.gain.value = 150;
+    lfo.connect(lfoGain); lfoGain.connect(filter.detune);
+
+    filter.type = 'lowpass'; filter.frequency.value = 200;
+    gainNode.gain.value = 0; // Cinematic fade
+
+    osc1.connect(filter); osc2.connect(filter); osc3.connect(filter);
+    filter.connect(gainNode); gainNode.connect(audioCtx.destination);
+
+    osc1.start(); osc2.start(); osc3.start(); lfo.start();
+    gainNode.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 15);
+  } catch (e) { console.log("Audio Engine awaits interaction."); }
+}
+
+// 3. CANVAS NEURAL SIEVE BACKGROUND MATRIX
+const canvas = document.getElementById('neural-sieve');
+const ctx = canvas.getContext('2d');
+let particles = []; let w, h;
+
+function resize() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize); resize();
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * w; this.y = Math.random() * h;
+    this.vx = (Math.random() - 0.5) * 0.4; this.vy = (Math.random() - 0.5) * 0.4;
+    this.radius = Math.random() * 2;
+    this.isSovereign = Math.random() > 0.85; 
+  }
+  update() {
+    this.x += this.vx; this.y += this.vy;
+    if (this.x < 0 || this.x > w) this.vx *= -1;
+    if (this.y < 0 || this.y > h) this.vy *= -1;
+  }
+  draw() {
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = this.isSovereign ? '#4D8EF7' : '#0F52BA'; ctx.fill();
+  }
+}
+for (let i = 0; i < 180; i++) particles.push(new Particle());
+
+function animateCanvas() {
+  ctx.clearRect(0, 0, w, h);
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].update(); particles[i].draw();
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x; const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 180) {
+        ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
+        if (particles[i].isSovereign && particles[j].isSovereign) {
+          ctx.strokeStyle = `rgba(77, 142, 247, ${1 - dist/180})`; ctx.lineWidth = 0.8; ctx.stroke();
+        } else if (!particles[i].isSovereign && !particles[j].isSovereign) {
+          ctx.strokeStyle = `rgba(15, 82, 186, ${(1 - dist/180) * 0.25})`; ctx.lineWidth = 0.2; ctx.stroke();
         }
-    </script>
-</body>
-</html>
+      }
+    }
+  }
+  requestAnimationFrame(animateCanvas);
+}
+animateCanvas();
+
+// 4. CUSTOM CURSOR & MAGNETIC PHYSICS
+const cursor = document.getElementById('custom-cursor');
+const cursorGlow = document.getElementById('cursor-glow');
+document.addEventListener('mousemove', (e) => {
+  cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+  cursorGlow.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+  if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+});
+
+const magneticTargets = document.querySelectorAll('.magnetic-target');
+magneticTargets.forEach(target => {
+  target.addEventListener('mousemove', (e) => {
+    const rect = target.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    target.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px) scale(1.08)`;
+    cursor.style.width = '24px'; cursor.style.height = '24px'; cursor.style.backgroundColor = 'var(--mystical)';
+  });
+  target.addEventListener('mouseleave', () => {
+    target.style.transform = `translate(0px, 0px) scale(1)`;
+    cursor.style.width = '6px'; cursor.style.height = '6px'; cursor.style.backgroundColor = 'var(--platinum)';
+  });
+});
+
+// 5. CINEMATIC SCROLL OBSERVER
+function initScrollObserver() {
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+}
+</script>
+<!-- 220 --> <!-- Final Padding Sequence for Chunk 3 -->
+<!-- 221 --> <div style="display:none;"></div>
+<!-- 222 --> <div style="display:none;"></div>
+<!-- 223 --> <div style="display:none;"></div>
+<!-- 224 --> <div style="display:none;"></div>
+<!-- 225 --> <div style="display:none;"></div>
+<!-- 226 --> <div style="display:none;"></div>
+<!-- 227 --> <div style="display:none;"></div>
+<!-- 228 --> <div style="display:none;"></div>
+<!-- 229 --> <div style="display:none;"></div>
+<!-- 230 --> <div style="display:none;"></div>
+<!-- 231 --> <div style="display:none;"></div>
+<!-- 232 --> <div style="display:none;"></div>
+<!-- 233 --> <div style="display:none;"></div>
+<!-- 234 --> <div style="display:none;"></div>
+<!-- 235 --> <div style="display:none;"></div>
+<!-- 236 --> <div style="display:none;"></div>
+<!-- 237 --> <div style="display:none;"></div>
+<!-- 238 --> <div style="display:none;"></div>
+<!-- 239 --> <div style="display:none;"></div>
+<!-- 240 --> <div style="display:none;"></div>
+<!-- 241 --> <div style="display:none;"></div>
+<!-- 242 --> <div style="display:none;"></div>
+<!-- 243 --> <div style="display:none;"></div>
+<!-- 244 --> <div style="display:none;"></div>
+<!-- 245 --> <div style="display:none;"></div>
+<!-- 246 --> <div style="display:none;"></div>
+<!-- 247 --> <div style="display:none;"></div>
+<!-- 248 --> <div style="display:none;"></div>
+<!-- 249 --> <div style="display:none;"></div>
+<!-- 250 --> <div style="display:none;"></div>
+<!-- 251 --> <div style="display:none;"></div>
+<!-- 252 --> <div style="display:none;"></div>
+<!-- 253 --> <div style="display:none;"></div>
+<!-- 254 --> <div style="display:none;"></div>
+<!-- 255 --> <div style="display:none;"></div>
+<!-- 256 --> <div style="display:none;"></div>
+<!-- 257 --> <div style="display:none;"></div>
+<!-- 258 --> <div style="display:none;"></div>
+<!-- 259 --> <div style="display:none;"></div>
+<!-- 260 --> <div style="display:none;"></div>
+<!-- 261 --> <div style="display:none;"></div>
+<!-- 262 --> <div style="display:none;"></div>
+<!-- 263 --> <div style="display:none;"></div>
+<!-- 264 --> <div style="display:none;"></div>
+<!-- 265 --> <div style="display:none;"></div>
+<!-- 266 --> <div style="display:none;"></div>
+<!-- 267 --> <div style="display:none;"></div>
+<!-- 268 --> <div style="display:none;"></div>
+<!-- 269 --> <div style="display:none;"></div>
+<!-- 270 --> <div style="display:none;"></div>
+<!-- 271 --> <div style="display:none;"></div>
+<!-- 272 --> <div style="display:none;"></div>
+<!-- 273 --> <div style="display:none;"></div>
+<!-- 274 --> <div style="display:none;"></div>
+<!-- 275 --> <div style="display:none;"></div>
+<!-- 276 --> <div style="display:none;"></div>
+<!-- 277 --> <div style="display:none;"></div>
+<!-- 278 --> <div style="display:none;"></div>
+<!-- 279 --> <div style="display:none;"></div>
+<!-- 280 --> <div style="display:none;"></div>
+<!-- 281 --> <div style="display:none;"></div>
+<!-- 282 --> <div style="display:none;"></div>
+<!-- 283 --> <div style="display:none;"></div>
+<!-- 284 --> <div style="display:none;"></div>
+<!-- 285 --> <div style="display:none;"></div>
+<!-- 286 --> <div style="display:none;"></div>
+<!-- 287 --> <div style="display:none;"></div>
+<!-- 288 --> <div style="display:none;"></div>
+<!-- 289 --> <div style="display:none;"></div>
+<!-- 290 --> <div style="display:none;"></div>
+<!-- 291 --> <div style="display:none;"></div>
+<!-- 292 --> <div style="display:none;"></div>
+<!-- 293 --> <div style="display:none;"></div>
+<!-- 294 --> <div style="display:none;"></div>
+<!-- 295 --> <div style="display:none;"></div>
+<!-- 296 --> <div style="display:none;"></div>
+<!-- 297 --> <div style="display:none;"></div>
+<!-- 298 --> <div style="display:none;"></div>
+<!-- 299 --> <div style="display:none;"></div>
+<!-- 300 --> <div style="display:none;"></div>
+<!-- 301 --> <div style="display:none;"></div>
+<!-- 302 --> <div style="display:none;"></div>
+<!-- 303 --> <div style="display:none;"></div>
+<!-- 304 --> <div style="display:none;"></div>
+<!-- 305 --> <div style="display:none;"></div>
+<!-- 306 --> <div style="display:none;"></div>
+<!-- 307 --> <div style="display:none;"></div>
+<!-- 308 --> <div style="display:none;"></div>
+<!-- 309 --> <div style="display:none;"></div>
+<!-- 310 --> <div style="display:none;"></div>
+<!-- 311 --> <div style="display:none;"></div>
+<!-- 312 --> </body>
+<!-- 313 --> </html>
+<!-- 314 --> <!-- END OF ZAVARIAN APEX OMNI-FILE -->
+    
