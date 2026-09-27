@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cox's Bazar Sea Bridge Resort | The Bachelor Group</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <img src="https://www.thebachelorgroup.com/frontend/assets/images/Logoo.jpg" alt="Bachelor Group Logo" style="filter: invert(1);">
+      </a>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Menu">☰</button>
+      <nav class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="projects.html">Projects</a>
+        <a href="hotel-shares.html">Hotel Shares</a>
+        <a href="leadership.html">Leadership</a>
+        <a href="contact.html">Contact</a>
+        <a href="contact.html" class="btn btn-outline" style="padding: 0.5rem 1rem;">Get a Quote</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Header -->
+  <section class="hero" style="min-height: 50vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 100px;">
+    <div class="hero-bg">
+      <img src="https://www.thebachelorgroup.com/uploads/resortConventionHall/1779171869_1sULDEo4e2.jpg" alt="Cox's Bazar Sea Bridge Resort">
+    </div>
+    <div class="hero-overlay" style="background: rgba(0,0,0,0.6);"></div>
+    <div class="container hero-content">
+      <h1>Cox's Bazar Sea Bridge Resort</h1>
+    </div>
+  </section>
+
+  <!-- Content Section -->
+  <section class="section">
+    <div class="container grid grid-2" style="align-items: center;">
+      <div>
+        <h2 style="font-size: 2rem;">Cox's Bazar Sea Bridge Resort</h2>
+        <p style="font-size: 1.1rem; line-height: 1.8;">Sea View Luxury Suite is a planned real estate and development initiative, where modern design, practical convenience, long-term value and the real needs of the customer are given importance.</p>
+        <p style="font-size: 1.1rem; line-height: 1.8;">The main objective of the project is to create an environment where living, investing, doing business or traveling can be more comfortable, safe and organized.</p>
+        <a href="contact.html" class="btn btn-primary mt-8">Enquire Now</a>
+      </div>
+      <div>
+        <img src="https://www.thebachelorgroup.com/uploads/hotelSharePage/1788778861_PxEOnFdyKw.png" alt="Details" style="border: 1px solid var(--border-focus); padding: 10px; background: var(--bg-surface);">
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-col">
+          <img src="https://www.thebachelorgroup.com/frontend/assets/images/footer-logo.jpg" alt="The Bachelor Group" class="footer-logo">
+          <p>The Bachelor Group একটি বিশ্বস্ত ও আধুনিক রিয়েল এস্টেট কোম্পানি, যা ক্রেতা ও বিক্রেতাদের জন্য সেরা সম্পত্তি সমাধান প্রদান করে।</p>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="hotel-shares.html">Hotel & Resort Shares</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact Us</h4>
+          <ul class="footer-links">
+            <li><span style="color:var(--text-secondary)">Address:</span> 28, Dilkusha Center, Floor-16, Motijheel, Dhaka-1000</li>
+            <li><span style="color:var(--text-secondary)">Phone:</span> <br><a href="tel:01898242526">01898-242526</a><br><a href="tel:01898242527">01898-242527</a><br><a href="tel:01898242528">01898-242528</a></li>
+            <li><span style="color:var(--text-secondary)">Email:</span> <a href="mailto:info@thebachelorgroup.com">info@thebachelorgroup.com</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 The Bachelor Group. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+      document.getElementById('nav-links').classList.toggle('active');
+    });
+  </script>
+</body>
+</html>
